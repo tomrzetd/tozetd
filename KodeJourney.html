@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emod Koding Journey | Dynamic Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        neonBlue: '#00f2ff',
+                        neonPurple: '#b300ff',
+                        neonGreen: '#00ff8f',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'bounce-in': 'bounce-in 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(0, 242, 255, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(0, 242, 255, 0.8)' },
+                        },
+                        'bounce-in': {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '70%': { transform: 'scale(0.95)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .dark {
+            color-scheme: dark;
+        }
+        
+        .neon-text-blue {
+            color: #00f2ff;
+            text-shadow: 0 0 5px rgba(0, 242, 255, 0.5), 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+        
+        .neon-text-purple {
+            color: #b300ff;
+            text-shadow: 0 0 5px rgba(179, 0, 255, 0.5), 0 0 10px rgba(179, 0, 255, 0.3);
+        }
+        
+        .neon-text-green {
+            color: #00ff8f;
+            text-shadow: 0 0 5px rgba(0, 255, 143, 0.5), 0 0 10px rgba(0, 255, 143, 0.3);
+        }
+        
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px -5px rgba(0, 242, 255, 0.3);
+        }
+        
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-blue {
+            background-color: rgba(0, 242, 255, 0.2);
+            color: #00f2ff;
+            border: 1px solid rgba(0, 242, 255, 0.5);
+        }
+        
+        .badge-purple {
+            background-color: rgba(179, 0, 255, 0.2);
+            color: #b300ff;
+            border: 1px solid rgba(179, 0, 255, 0.5);
+        }
+        
+        .badge-green {
+            background-color: rgba(0, 255, 143, 0.2);
+            color: #00ff8f;
+            border: 1px solid rgba(0, 255, 143, 0.5);
+        }
+        
+        .filter-button.active {
+            background-color: rgba(0, 242, 255, 0.2);
+            color: #00f2ff;
+            border: 1px solid rgba(0, 242, 255, 0.5);
+        }
+        
+        /* Loading animation */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #1e293b;
+            border-bottom-color: #00f2ff;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Grid animation */
+        .grid-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .grid-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: #1e293b;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        
+        .modal-overlay.active .modal-content {
+            animation: bounce-in 0.5s ease-out forwards;
+        }
+        
+        @keyframes bounce-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Copy button animation */
+        .copy-success {
+            animation: copy-success 1.5s ease forwards;
+        }
+        
+        @keyframes copy-success {
+            0% { background-color: rgba(0, 255, 143, 0.2); }
+            20% { background-color: rgba(0, 255, 143, 0.5); }
+            80% { background-color: rgba(0, 255, 143, 0.5); }
+            100% { background-color: rgba(0, 255, 143, 0.2); }
+        }
+        
+        /* Image placeholder */
+        .img-placeholder {
+            background-color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Debug panel */
+        .debug-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00f2ff;
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 300px;
+            max-height: 200px;
+            overflow: auto;
+            z-index: 1000;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00f2ff;
+            display: none;
+        }
+        
+        .debug-panel.active {
+            display: block;
+        }
+		
+		.project-run-link {
+			background-color: rgba(255, 165, 0, 0.1);
+			border: 1px solid rgba(255, 165, 0, 0.4);
+			color: #ffa500;
+		}
+
+		.project-run-link:hover {
+			background-color: rgba(255, 165, 0, 0.2);
+		}
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 font-sans" data-aos-easing="ease" data-aos-duration="800" data-aos-delay="0">
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-darkBg/90 backdrop-blur-md border-b border-gray-800">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="#home" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-neonBlue to-neonPurple flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">&lt;/&gt;</span>
+                    </div>
+                    <span class="font-mono font-bold text-xl neon-text-blue">Emod Koding</span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="font-medium hover:text-neonBlue transition-colors">Home</a>
+                    <a href="#projects" class="font-medium hover:text-neonBlue transition-colors">Projects</a>
+                    <a href="#about" class="font-medium hover:text-neonBlue transition-colors">About</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-300 focus:outline-none" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="md:hidden hidden mt-4 pb-2" id="mobile-menu">
+                <a href="#home" class="block py-2 hover:text-neonBlue transition-colors">Home</a>
+                <a href="#projects" class="block py-2 hover:text-neonBlue transition-colors">Projects</a>
+                <a href="#about" class="block py-2 hover:text-neonBlue transition-colors">About</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="pt-24 md:pt-32 pb-16 md:pb-24 relative overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-darkBg via-darkBg to-black opacity-90 z-0"></div>
+            
+            <!-- Animated Background -->
+            <div class="absolute inset-0 z-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="1"></path>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)"></rect>
+                </svg>
+            </div>
+            
+            <!-- Neon Lines -->
+            <div class="absolute inset-0 z-0 overflow-hidden">
+                <div class="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-neonBlue to-transparent opacity-30"></div>
+                <div class="absolute top-3/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-neonPurple to-transparent opacity-30"></div>
+                <div class="absolute bottom-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-neonGreen to-transparent opacity-30"></div>
+                <div class="absolute bottom-0 left-3/4 w-px h-full bg-gradient-to-b from-transparent via-neonBlue to-transparent opacity-30"></div>
+            </div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 aos-init aos-animate" data-aos="fade-up">
+                        <span class="neon-text-blue">Emod</span> 
+                        <span class="neon-text-purple">Koding</span> 
+                        <span class="neon-text-green">Journey</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-300 mb-8 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+                        Exploring the Digital Frontier Through Code
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12 aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
+                        <a href="#projects" class="px-8 py-3 bg-gradient-to-r from-neonBlue to-neonPurple rounded-full font-medium text-white hover:shadow-lg hover:shadow-neonBlue/20 transition-all">
+                            View Projects
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Tech Stack Icons -->
+                <div class="flex justify-center flex-wrap gap-8 mt-12 aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center">
+                        <i class="fab fa-python text-4xl text-neonPurple mb-2"></i>
+                        <div class="text-sm">Python</div>
+                    </div>
+                    <div class="text-center">
+                        <i class="fab fa-js text-4xl text-yellow-400 mb-2"></i>
+                        <div class="text-sm">JavaScript</div>
+                    </div>
+                    <div class="text-center">
+                        <i class="fab fa-android text-4xl text-neonGreen mb-2"></i>
+                        <div class="text-sm">Android</div>
+                    </div>
+                    <div class="text-center">
+                        <i class="fab fa-raspberry-pi text-4xl text-red-500 mb-2"></i>
+                        <div class="text-sm">IoT</div>
+                    </div>
+                </div>
+                
+                <!-- Scroll Down Indicator -->
+                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <a href="#projects" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Projects Section -->
+        <section id="projects" class="py-16">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-12 text-center aos-init aos-animate" data-aos="fade-up">
+                    <span class="neon-text-green">My</span> Projects
+                </h2>
+                
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap justify-center gap-3 mb-12 aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+                    <button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors active" data-filter="all">All</button>
+                    <button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors" data-filter="CPAS">CPAS</button>
+					<button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors" data-filter="Web">Web</button>
+                    <button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors" data-filter="Mobile">Mobile</button>
+					<button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors" data-filter="Block">Block</button>
+                    <button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors" data-filter="IoT">IoT</button>
+                    <button class="filter-button px-4 py-2 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors" data-filter="FPGA">FPGA</button>
+                </div>
+                
+                <!-- Loading Indicator -->
+                <div id="loading" class="flex justify-center my-12 hidden">
+                    <span class="loader"></span>
+                </div>
+                
+                <!-- Error Message -->
+                <div id="error-message" class="hidden text-center my-12 p-6 bg-red-900/30 border border-red-500 rounded-lg">
+                    <p class="text-red-300 mb-4"><i class="fas fa-exclamation-triangle mr-2"></i> Failed to load projects</p>
+                    <button id="retry-button" class="px-4 py-2 bg-red-500/20 text-red-300 border border-red-500 rounded-lg hover:bg-red-500/30 transition-colors">
+                        Retry
+                    </button>
+                </div>
+                
+                <!-- Projects Grid -->
+                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Projects will be loaded dynamically here -->
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="no-results" class="hidden text-center my-12">
+                    <p class="text-gray-400 text-lg">No projects found matching your filter.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-darkCard">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-12 text-center aos-init aos-animate" data-aos="fade-up">
+                    <span class="neon-text-blue">About</span> Me
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div data-aos="fade-right" class="aos-init aos-animate">
+                        <div class="relative">
+                            <div class="w-64 h-64 mx-auto rounded-full overflow-hidden border-4 border-neonBlue/30 p-1">
+                                <svg class="w-full h-full text-gray-700 rounded-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor" viewBox="0 0 640 512">
+                                    <path d="M480 80C480 35.82 515.8 0 560 0C604.2 0 640 35.82 640 80C640 124.2 604.2 160 560 160C515.8 160 480 124.2 480 80zM0 456.1C0 445.6 2.964 435.3 8.551 426.4L225.3 81.01C231.9 70.42 243.5 64 256 64C268.5 64 280.1 70.42 286.8 81.01L412.7 281.7L460.9 202.7C464.1 196.1 472.2 192 480 192C487.8 192 495 196.1 499.1 202.7L631.1 419.1C636.9 428.6 640 439.7 640 450.9C640 484.6 612.6 512 578.9 512H55.91C25.03 512 .0006 486.1 .0006 456.1L0 456.1z"></path>
+                                </svg>
+                            </div>
+                            <div class="absolute -bottom-4 -right-4 bg-darkBg p-3 rounded-full border-2 border-neonPurple">
+                                <i class="fas fa-code text-2xl text-neonPurple"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-12 flex flex-wrap justify-center gap-3">
+                            <div class="badge badge-blue px-4 py-2">JavaScript</div>
+                            <div class="badge badge-purple px-4 py-2">Python</div>
+                            <!-- <div class="badge badge-green px-4 py-2">React</div>
+                            <div class="badge badge-blue px-4 py-2">Node.js</div> -->
+                            <div class="badge badge-purple px-4 py-2">TensorFlow</div>
+                            <div class="badge badge-green px-4 py-2">Flutter</div>
+                            <div class="badge badge-blue px-4 py-2">Arduino</div>
+                            <div class="badge badge-purple px-4 py-2">VHDL</div>
+                            <div class="badge badge-green px-4 py-2">C++</div>
+                        </div>
+                    </div>
+                    
+                    <div data-aos="fade-left" class="aos-init aos-animate">
+                        <h3 class="text-2xl font-bold mb-6 neon-text-purple">Hello, I'm Emod</h3>
+                        <p class="text-gray-300 mb-6">
+                            I'm a passionate developer with expertise in web development, mobile applications, IoT, and FPGA design. With years of experience, I've worked on a diverse range of projects that combine hardware and software to create innovative solutions.
+                        </p>
+                        <p class="text-gray-300 mb-6">
+                            My journey in technology began with embedded systems, but I quickly expanded into integration fpga, web development, native programming and machine learning. I enjoy tackling complex problems and turning ideas into functional, elegant solutions.
+                        </p>
+                        <p class="text-gray-300 mb-8">
+                            When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or sharing my knowledge through technical articles and tutorials.
+                        </p>
+                        
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors text-2xl">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors text-2xl">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors text-2xl">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors text-2xl">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-darkCard border-t border-gray-800 pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <a href="#home" class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-neonBlue to-neonPurple flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">&lt;/&gt;</span>
+                        </div>
+                        <span class="font-mono font-bold text-xl neon-text-blue">Emod Koding</span>
+                    </a>
+                    <p class="text-gray-400 mb-4">
+                        A showcase of my projects and coding journey through web development, mobile apps, IoT, and FPGA design.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-neonBlue transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-neonBlue transition-colors">Home</a></li>
+                        <li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors">Projects</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-neonBlue transition-colors">About</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+					<h4 class="font-bold text-lg mb-4">Project Categories</h4>
+					<ul class="space-y-2">
+						<li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors filter-link" data-filter="Web">Web Development</a></li>
+						<li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors filter-link" data-filter="Mobile">Mobile Apps</a></li>
+						<li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors filter-link" data-filter="IoT">IoT Projects</a></li>
+						<li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors filter-link" data-filter="FPGA">FPGA Development</a></li>
+						<!-- Tambahkan kategori baru -->
+						<li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors filter-link" data-filter="CPAS">CPAS Projects</a></li>
+						<li><a href="#projects" class="text-gray-400 hover:text-neonBlue transition-colors filter-link" data-filter="Block">Blockchain</a></li>
+					</ul>
+				</div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 text-sm mb-4 md:mb-0">
+                    © 2025 Emod Koding. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-neonBlue/20 text-neonBlue p-3 rounded-full shadow-lg hover:bg-neonBlue/30 transition-colors">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Debug Panel -->
+    <div id="debug-panel" class="debug-panel">
+        <div class="mb-2 font-bold">Debug Info:</div>
+        <div id="debug-content"></div>
+    </div>
+    
+    <!-- Prompt Modal -->
+    <div id="prompt-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold neon-text-purple" id="modal-title">Project Prompt</h3>
+                    <button id="close-modal" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="bg-gray-900 rounded-lg p-4 mb-4 font-mono text-sm overflow-x-auto" id="prompt-content">
+                    <!-- Prompt content will be inserted here -->
+                </div>
+                
+                <div class="flex justify-end">
+                    <button id="copy-prompt" class="px-4 py-2 bg-neonGreen/20 text-neonGreen border border-neonGreen/50 rounded-lg hover:bg-neonGreen/30 transition-colors flex items-center">
+                        <i class="far fa-copy mr-2"></i> Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Card Template -->
+<template id="project-card-template">
+    <div class="bg-darkCard rounded-xl overflow-hidden card-hover grid-item">
+        <!-- Bagian atas: dua kolom berdampingan -->
+        <div class="grid grid-cols-2 gap-1 bg-gray-800">
+            <!-- Kolom kiri: Thumbnail Project -->
+            <div class="aspect-w-16 aspect-h-9 relative overflow-hidden project-thumb-container">
+                <img class="project-thumb w-full h-full object-cover" src="" alt="Project Thumbnail">
+                <div class="img-placeholder w-full h-full absolute inset-0 flex items-center justify-center hidden">
+                    <div class="text-center">
+                        <i class="fas fa-image text-3xl mb-2"></i>
+                        <p>Image Not Available</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kolom kanan: YouTube Thumbnail -->
+            <div class="project-youtube-container aspect-w-16 aspect-h-9 relative overflow-hidden">
+                <img class="project-youtube-thumb w-full h-full object-cover" src="" alt="YouTube Thumbnail">
+                <div class="youtube-placeholder img-placeholder w-full h-full absolute inset-0 flex items-center justify-center hidden">
+                    <div class="text-center">
+                        <i class="fas fa-video-slash text-3xl mb-2"></i>
+                        <p>Video Not Available</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <div class="flex flex-wrap mb-2 project-badges"></div>
+            <h3 class="text-xl font-bold mb-2 project-title"></h3>
+            <div class="text-gray-400 mb-2 project-category"></div>
+            <p class="text-gray-300 mb-4 project-description"></p>
+            <div class="flex space-x-2 mb-2">
+                <a class="project-code-link px-3 py-1 bg-neonBlue/10 border border-neonBlue/40 rounded hover:bg-neonBlue/20 transition" target="_blank" rel="noopener">
+                    <i class="fab fa-github mr-1"></i> Code
+                </a>
+                <a class="project-live-link px-3 py-1 bg-neonGreen/10 border border-neonGreen/40 rounded hover:bg-neonGreen/20 transition" target="_blank" rel="noopener">
+                    <i class="fas fa-external-link-alt mr-1"></i> Videos
+                </a>
+				<a class="project-run-link px-3 py-1 project-run-link project-run-link" target="_blank" rel="noopener" style="display: none;">
+					<i class="fas fa-play mr-1"></i> Run
+				</a>
+            </div>
+            <button class="project-prompt-button px-3 py-1 mt-2 bg-neonPurple/10 border border-neonPurple/40 rounded hover:bg-neonPurple/20 transition hidden">
+                <i class="fas fa-magic mr-1"></i> Show Prompt
+            </button>
+        </div>
+    </div>
+</template>
+
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+        
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Debug functionality
+        const debugPanel = document.getElementById('debug-panel');
+        const debugContent = document.getElementById('debug-content');
+        let debugMode = false;
+        
+        function toggleDebugMode() {
+            debugMode = !debugMode;
+            debugPanel.classList.toggle('active', debugMode);
+            if (debugMode) {
+                log('Debug mode activated');
+            }
+        }
+        
+        function log(message, data = null) {
+            if (!debugMode) return;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const logItem = document.createElement('div');
+            logItem.className = 'mb-1 border-b border-gray-700 pb-1';
+            
+            if (data) {
+                logItem.innerHTML = `<span class="opacity-70">[${timestamp}]</span> ${message}: <span class="text-neonGreen">${JSON.stringify(data)}</span>`;
+            } else {
+                logItem.innerHTML = `<span class="opacity-70">[${timestamp}]</span> ${message}`;
+            }
+            
+            debugContent.appendChild(logItem);
+            debugContent.scrollTop = debugContent.scrollHeight;
+        }
+        
+        // Press Ctrl+D to toggle debug mode
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                toggleDebugMode();
+            }
+        });
+        
+        // Modal functionality
+        const promptModal = document.getElementById('prompt-modal');
+        const closeModal = document.getElementById('close-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const promptContent = document.getElementById('prompt-content');
+        const copyPromptBtn = document.getElementById('copy-prompt');
+        
+        function openModal(title, content) {
+            modalTitle.textContent = title + ' Prompt';
+            promptContent.textContent = content;
+            promptModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        }
+        
+        function closeModalFunc() {
+            promptModal.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        }
+        
+        closeModal.addEventListener('click', closeModalFunc);
+        
+        // Close modal when clicking outside content
+        promptModal.addEventListener('click', (e) => {
+            if (e.target === promptModal) {
+                closeModalFunc();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && promptModal.classList.contains('active')) {
+                closeModalFunc();
+            }
+        });
+        
+        // Copy prompt to clipboard
+        copyPromptBtn.addEventListener('click', () => {
+            const textToCopy = promptContent.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                copyPromptBtn.classList.add('copy-success');
+                copyPromptBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Copied!';
+                
+                setTimeout(() => {
+                    copyPromptBtn.classList.remove('copy-success');
+                    copyPromptBtn.innerHTML = '<i class="far fa-copy mr-2"></i> Copy to Clipboard';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                log('Copy error', err.message);
+            });
+        });
+        
+        // Project data and filtering
+        let allProjects = [];
+        const projectsGrid = document.getElementById('projects-grid');
+        const loadingIndicator = document.getElementById('loading');
+        const errorMessage = document.getElementById('error-message');
+        const noResults = document.getElementById('no-results');
+        const retryButton = document.getElementById('retry-button');
+        const filterButtons = document.querySelectorAll('.filter-button');
+        const filterLinks = document.querySelectorAll('.filter-link');
+        
+        // Improved Google Drive URL handling
+        function getDirectImageUrl(driveUrl) {
+            if (!driveUrl) return '';
+            
+            log('Processing image URL', driveUrl);
+            
+            // Check if it's a Google Drive URL
+            if (driveUrl.includes('drive.google.com/file/d/')) {
+                // Extract the file ID
+                const fileIdMatch = driveUrl.match(/\/d\/([^\/]+)/);
+                if (fileIdMatch && fileIdMatch[1]) {
+                    const fileId = fileIdMatch[1];
+                    // Use the export=view parameter which is more reliable
+                    const directUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                    log('Converted to direct URL', directUrl);
+                    return directUrl;
+                }
+            }
+            
+            return driveUrl;
+        }
+        
+        // Function to convert Google Drive URL to lh3 format
+        function getPreferredImageUrl(originalUrl) {
+            if (!originalUrl) return '';
+            
+            if (originalUrl.includes('drive.google.com')) {
+                const match = originalUrl.match(/\/d\/([^\/]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            return originalUrl;
+        }
+		
+		function extractYouTubeId(url) {
+				if (!url) return null;
+				const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+				const match = url.match(regExp);
+				return (match && match[2].length === 11) ? match[2] : null;
+		}
+        
+        // Setup image error handling
+        function setupImageErrorHandling(imgElement, placeholderElement, fallbackUrl) {
+            imgElement.onload = function() {
+                log('Image loaded successfully', this.src);
+                placeholderElement.classList.add('hidden');
+                this.classList.remove('hidden');
+            };
+            
+            imgElement.onerror = function() {
+                log('Image failed to load', this.src);
+                
+                // Try fallback URL if available
+                if (fallbackUrl) {
+                    log('Trying fallback URL', fallbackUrl);
+                    this.src = fallbackUrl;
+                    delete this.dataset.fallbackSrc;
+                } else {
+                    // Show placeholder
+                    this.classList.add('hidden');
+                    placeholderElement.classList.remove('hidden');
+                }
+            };
+        }
+        
+        // Fetch projects from Google Sheets JSON API
+        async function fetchProjects() {
+            loadingIndicator.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            projectsGrid.innerHTML = '';
+            
+            try {
+                log('Fetching projects data');
+                const response = await fetch('https://script.google.com/macros/s/AKfycby_TVxKe_leRVMmrQLDjLV6OnhKjIM-nV7QBBMmcGVWMJJKFest1u-lArIYJw7yUTEa/exec?admin=1&pass=JusM1ne');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch projects');
+                }
+                
+                const data = await response.json();
+                allProjects = data.projects || [];
+                log('Projects fetched successfully', { count: allProjects.length });
+                
+                // Display all projects initially
+                displayProjects(allProjects);
+            } catch (error) {
+                console.error('Error fetching projects:', error);
+                log('Error fetching projects', error.message);
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+        
+        // Create project card from template
+        function createProjectCard(project) {
+			const template = document.getElementById('project-card-template');
+			const card = template.content.cloneNode(true);
+			
+			// Set project data
+			card.querySelector('.project-title').textContent = project.TITLE;
+			card.querySelector('.project-description').textContent = project.DESCRIPTION;
+			card.querySelector('.project-category').textContent = project.CATEGORIES;
+			
+			// Set thumbnail
+			const thumbElement = card.querySelector('.project-thumb');
+			const placeholderElement = card.querySelector('.img-placeholder');
+			const preferredImageUrl = getPreferredImageUrl(project.THUMB);
+			const fallbackImageUrl = getDirectImageUrl(project.THUMB);
+			
+			thumbElement.src = preferredImageUrl;
+			thumbElement.alt = project.TITLE;
+			setupImageErrorHandling(thumbElement, placeholderElement, fallbackImageUrl);
+			
+			// Atur container grid
+			const thumbContainer = card.querySelector('.project-thumb-container');
+			const youtubeContainer = card.querySelector('.project-youtube-container');
+			const youtubeImgElement = card.querySelector('.project-youtube-thumb');
+			const youtubePlaceholder = card.querySelector('.youtube-placeholder');
+			
+			// Ekstrak YouTube ID jika ada LINKSLIVE
+			let youtubeVideoId = null;
+			if (project.LINKSLIVE) {
+				youtubeVideoId = extractYouTubeId(project.LINKSLIVE);
+			}
+			
+			// Atur thumbnail YouTube jika video ID valid
+			if (youtubeVideoId) {
+				youtubeImgElement.src = `https://img.youtube.com/vi/${youtubeVideoId}/mqdefault.jpg`;
+				setupImageErrorHandling(youtubeImgElement, youtubePlaceholder, null);
+			} else {
+				youtubeContainer.classList.add('hidden');
+			}
+			
+			// Set links
+			const codeLink = card.querySelector('.project-code-link');
+			if (project.LINKSKODE) {
+				codeLink.href = project.LINKSKODE;
+			} else {
+				codeLink.classList.add('hidden');
+			}
+			
+			const liveLink = card.querySelector('.project-live-link');
+			if (project.LINKSLIVE) {
+				liveLink.href = project.LINKSLIVE;
+			} else {
+				liveLink.classList.add('hidden');
+			}
+			
+			// TAMBAHKAN PENANGANAN LINKSRUN BARU
+			const runLink = card.querySelector('.project-run-link');
+			if (project.LINKSRUN) {
+				runLink.href = project.LINKSRUN;
+				runLink.style.display = 'inline-block'; // <--- BARIS INI TAMBAHKAN!
+			} else {
+				runLink.classList.add('hidden');
+			}
+			
+			// Set prompt button
+			const promptButton = card.querySelector('.project-prompt-button');
+			if (project.PROMPT) {
+				promptButton.classList.remove('hidden');
+				promptButton.addEventListener('click', () => {
+					openModal(project.TITLE, project.PROMPT);
+				});
+			}
+			
+			// Add badges
+			const badgesContainer = card.querySelector('.project-badges');
+			if (project.BADGES) {
+				const badges = project.BADGES.split(',');
+				badges.forEach((badge, index) => {
+					const badgeElement = document.createElement('span');
+					badgeElement.className = `badge ${index % 3 === 0 ? 'badge-blue' : index % 3 === 1 ? 'badge-purple' : 'badge-green'}`;
+					badgeElement.textContent = badge.trim();
+					badgesContainer.appendChild(badgeElement);
+				});
+			}
+			
+			return card;
+		}
+        
+        // Display projects in the grid
+        function displayProjects(projects) {
+            projectsGrid.innerHTML = '';
+            
+            if (projects.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            log('Displaying projects', { count: projects.length });
+            
+            projects.forEach((project, index) => {
+                const card = createProjectCard(project);
+                const gridItem = card.querySelector('.grid-item');
+                
+                // Add delay based on index for staggered animation
+                gridItem.style.transitionDelay = `${index * 0.1}s`;
+                
+                projectsGrid.appendChild(card);
+            });
+            
+            // Trigger animation after a small delay
+            setTimeout(() => {
+                document.querySelectorAll('.grid-item').forEach(item => {
+                    item.classList.add('show');
+                });
+            }, 100);
+        }
+        
+        // Filter projects by category
+        function filterProjects(category) {
+            let filteredProjects;
+            
+            if (category === 'all') {
+                filteredProjects = allProjects;
+            } else {
+                filteredProjects = allProjects.filter(project => 
+                    project.CATEGORIES && project.CATEGORIES.includes(category)
+                );
+            }
+            
+            log('Filtering projects', { category, count: filteredProjects.length });
+            displayProjects(filteredProjects);
+            
+            // Update active filter button
+            filterButtons.forEach(button => {
+                if (button.dataset.filter === category) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+        
+        // Add event listeners to filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.dataset.filter;
+                filterProjects(filter);
+            });
+        });
+        
+        // Add event listeners to filter links in footer
+        filterLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const filter = link.dataset.filter;
+                filterProjects(filter);
+                
+                // Scroll to projects section
+                document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // Retry button
+        retryButton.addEventListener('click', fetchProjects);
+        
+        // Initial fetch
+        document.addEventListener('DOMContentLoaded', () => {
+            log('Page loaded, fetching projects');
+            fetchProjects();
+        });
+        
+        // Intersection Observer for lazy loading and animations
+        const observeElements = () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.grid-item').forEach(item => {
+                observer.observe(item);
+            });
+        };
+        
+        // Call after projects are loaded
+        window.addEventListener('load', observeElements);
+    </script>
+</body>
+</html>
